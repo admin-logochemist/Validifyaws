@@ -4,27 +4,34 @@ var router = express.Router();
 
 router.get('/',async function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    const bcurrency=req.query.bcurrency;
+
     const query = `
-query {
-    ethereum(network: ethereum) {
-      address(address: {is: "0xae78736cd615f374d3085123a210448e74fc6393"}) {
-        balances {
-          currency {
-            address
-            symbol
-            tokenType
-          }
-          value
-        }
+query  {
+  ethereum(network: bsc) {
+    dexTrades(
+      options: {asc: "timeInterval.minute"}
+      date: {since: "2021-06-20T07:23:21.000Z", till: "2021-06-23T15:23:21.000Z"}
+      exchangeAddress: {is: "0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73"}
+      baseCurrency: {is: "0x2170ed0880ac9a755fd29b2688956bd959f933f8"},
+      quoteCurrency: {is: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c"},
+      tradeAmountUsd: {gt: 10}
+    ) 
+    {
+      timeInterval {
+        minute(count: 15, format: "%Y-%m-%dT%H:%M:%SZ")  
       }
+      volume: quoteAmount
+      high: quotePrice(calculate: maximum)
+      low: quotePrice(calculate: minimum)
+      open: minimum(of: block, get: quote_price)
+      close: maximum(of: block, get: quote_price) 
     }
   }
-  
+}
   
 
 `;
-const url = "https://graphql.bitquery.io/";
+const url = "https://graphql.bitquery.io";
 const opts = {
     method: "POST",
     headers: {
@@ -39,8 +46,8 @@ const opts = {
     fetch(url, opts)
    
 
-    .then(res => res.json())
-    .then(data => res.send( data ) )
+    .then(res => res.text())
+    .then(text => res.send( text) )
    
     .catch(console.error);
     

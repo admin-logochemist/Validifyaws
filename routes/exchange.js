@@ -5,14 +5,17 @@ var router = express.Router();
 router.get('/',async function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     const bcurrency=req.query.bcurrency;
+    const network=req.query.network;
+    const qcurrency=req.query.qcurrency;
+    const ex=req.query.ex;
     const query = `
 query {
-  ethereum(network: ethereum) {
+  ethereum(network: ${network}) {
     dexTrades(
-      date: {in: "2022-04-06"}
-      exchangeName: {is: "Uniswap"}
+      date: {in: "2021-04-15"}
+      exchangeName: {is: "${ex}"}
       baseCurrency: {is: "${bcurrency}"}
-      quoteCurrency: {is: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"}
+      quoteCurrency: {is: "${qcurrency}"}
     ) {
       baseCurrency {
         symbol
