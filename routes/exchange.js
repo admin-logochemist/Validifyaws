@@ -7,38 +7,39 @@ router.get('/',async function(req, res, next) {
     const bcurrency=req.query.bcurrency;
     const network=req.query.network;
     const qcurrency=req.query.qcurrency;
-    const ex=req.query.ex;
+    const ex=req.query.ex
     const query = `
-query {
+query
+{
   ethereum(network: ${network}) {
     dexTrades(
-      date: {in: "2021-04-15"}
-      exchangeName: {is: "${ex}"}
+      options: {desc: ["block.height", "tradeIndex"], limit: 10000, offset: 0}
+      date: {since: "2022-01-15"}
       baseCurrency: {is: "${bcurrency}"}
       quoteCurrency: {is: "${qcurrency}"}
     ) {
+      block {
+        timestamp {
+          time(format: "%Y-%m-%d %H:%M:%S")
+        }
+        height
+      }
       baseCurrency {
         symbol
         address
-        name
       }
-      baseAmount
       quoteCurrency {
         symbol
         address
-        name
       }
-      quoteAmount
-      maximum_price: quotePrice(calculate: maximum)
-      trades: count
-      quotePrice
       side
-      maker {
-        address
-      }
-      block {
-        timestamp {
-          iso8601
+      baseAmount
+      quoteAmount
+      quotePrice
+      tradeIndex
+      transaction(txHash: {}) {
+        txFrom {
+          address
         }
       }
     }
