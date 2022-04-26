@@ -2,7 +2,7 @@ const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch
 var express = require('express');
 var router = express.Router();
 
-router.get('/',async function(req, res, next) {
+exports.exchange= (req, res, next)=>{
     res.header("Access-Control-Allow-Origin", "*");
     const bcurrency=req.query.bcurrency;
     const network=req.query.network;
@@ -69,5 +69,5 @@ const opts = {
    
     .catch(console.error);
     
-})
-module.exports = router;
+}
+// module.exports = router;
